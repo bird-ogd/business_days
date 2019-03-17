@@ -20,7 +20,11 @@ while True:
 	number = 0
 	workdays = []
 	bh = []
+	count_type = ""
 
+	count = raw_input("Calendar days (c) or Business days (b) > ")
+	if count.lower() == "q":
+		exit()
 	start = raw_input("Enter start date (dd-mm-yyyy) > ")
 	if start.lower() == "q":
 		exit()
@@ -35,15 +39,23 @@ while True:
 		single = str(single_date)
 		listit = single.split('-')
 		datedelta = dt.datetime(int(listit[0]), int(listit[1]), int(listit[2])).weekday()
-		if datedelta < 5:
-			workdays.append(single)
-			number += 1
+		if count.lower() == "b":
+			count_type = "business"
+			if datedelta < 5:
+				workdays.append(single)
+				number += 1
+		elif count.lower() == "c":
+			count_type = "calendar"
+			if datedelta < 7:
+				workdays.append(single)
+				number += 1
 
-	for k in y["england-and-wales"]['events']:
-		for l in workdays:
-			if l == k['date']:
-				bh.append(l)
+	if count.lower() == "b":
+		for k in y["england-and-wales"]['events']:
+			for l in workdays:
+				if l == k['date']:
+					bh.append(l)
 
 	number_of_days = len(workdays) - len(bh)
-	print(str(number_of_days) + " business days (inclusive of the start and end date)")
+	print(str(number_of_days) + " " + count_type + " days (inclusive of the start and end date)")
 
