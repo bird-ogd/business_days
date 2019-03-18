@@ -14,31 +14,16 @@ def date_range(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
         yield start_date + timedelta(n)
 
-clear()
-
-while True:
+def calc_business_days(start_date, end_date, count):
 	number = 0
 	workdays = []
 	bh = []
 	count_type = ""
 
-	count = raw_input("Calendar days (c) or Business days (b) > ")
-	if count.lower() == "q":
-		exit()
-	start = raw_input("Enter start date (dd-mm-yyyy) > ")
-	if start.lower() == "q":
-		exit()
-	end = raw_input("Enter end date (dd-mm-yyyy) >  ")
-	if end.lower() == "q":
-		exit()
-	
-	start_date = dt.datetime.strptime(start, '%d-%m-%Y').date()
-	end_date = dt.datetime.strptime(end, '%d-%m-%Y').date() + timedelta(days=1)
-
 	for single_date in date_range(start_date, end_date):
 		single = str(single_date)
-		listit = single.split('-')
-		datedelta = dt.datetime(int(listit[0]), int(listit[1]), int(listit[2])).weekday()
+		split_date = single.split('-')
+		datedelta = dt.datetime(int(split_date[0]), int(split_date[1]), int(split_date[2])).weekday()
 		if count.lower() == "b":
 			count_type = "business"
 			if datedelta < 5:
@@ -56,6 +41,24 @@ while True:
 				if l == k['date']:
 					bh.append(l)
 
-	number_of_days = len(workdays) - len(bh)
-	print(str(number_of_days) + " " + count_type + " days (inclusive of the start and end date)")
+	return [str(len(workdays) - len(bh)), count_type]
+
+clear()
+
+while True:
+	count = raw_input("Calendar days (c) or Business days (b) > ")
+	if count.lower() == "q":
+		exit()
+	start = raw_input("Enter start date (dd-mm-yyyy) > ")
+	if start.lower() == "q":
+		exit()
+	end = raw_input("Enter end date (dd-mm-yyyy) > ")
+	if end.lower() == "q":
+		exit()
+	
+	start_date = dt.datetime.strptime(start, '%d-%m-%Y').date()
+	end_date = dt.datetime.strptime(end, '%d-%m-%Y').date() + timedelta(days=1)
+
+	result = calc_business_days(start_date, end_date, count)
+	print(result[0] + " " + result[1] + " days (inclusive of the start and end date)")
 
